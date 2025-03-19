@@ -237,7 +237,7 @@ class DaphneContext(object):
         :param return_shape: Whether to return the original shape of the input array.
         :return: The data from numpy as a Matrix.
         """
-        print(f"from_numpy2()")
+        # print(f"from_numpy2()")
 
         if isinstance(mat, (pd.Series, pd.DataFrame)):
             print("Series or DataFrame detected, converting to numpy array")
@@ -245,7 +245,7 @@ class DaphneContext(object):
             print(f"from_numpy(): mat={mat}")
 
         original_shape = mat.shape
-        print(f"Original shape: {original_shape}")
+        # print(f"Original shape: {original_shape}")
         
         if mat.ndim == 1:
             mat = mat.reshape(-1, 1)
@@ -253,9 +253,9 @@ class DaphneContext(object):
             if mat.ndim > 2:
                 mat = mat.reshape((original_shape[0], -1))
             rows, cols = mat.shape
-        print(f"Reshaped matrix: {mat.shape}")
+        # print(f"Reshaped matrix: {mat.shape}")
 
-        print(f"from_numpy(): dtype={mat.dtype}")
+        # print(f"from_numpy(): dtype={mat.dtype}")
 
         # Assign value type code (vtc) based on dtype
         try:
@@ -306,7 +306,7 @@ class DaphneContext(object):
                 unnamed_params = [upper, lower, rows, cols, vtc]
                 named_params = []
                 res = Matrix(self, 'receiveFromNumpy', unnamed_params, named_params, local_data=mat)
-                print(f"Matrix object created with shared memory metadata")
+                # print(f"Matrix object created with shared memory metadata")
             else:
                 # Handle numerical data
                 address = mat.ctypes.data_as(np.ctypeslib.ndpointer(dtype=mat.dtype, ndim=1, flags='C_CONTIGUOUS')).value
@@ -347,11 +347,11 @@ class DaphneContext(object):
             csv_file_path = file_name + ".csv"
             meta_file_path = file_name + ".meta"
 
-            print(f"CSV file path: {csv_file_path}")
-            print(f"Metadata file path: {meta_file_path}")
+            # print(f"CSV file path: {csv_file_path}")
+            # print(f"Metadata file path: {meta_file_path}")
 
             string_data = mat.astype(str).tolist()
-            print(f"String data: {string_data}")
+            # print(f"String data: {string_data}")
 
             # Write the string data to a temporary CSV file
             try:
@@ -375,8 +375,8 @@ class DaphneContext(object):
                         "valueType": vtc
                     }
                     json.dump(meta_content, f, indent=2)
-                print(f"Metadata file created at: {meta_file_path}")
-                print(f"Metadata file content: {json.dumps(meta_content, indent=2)}")
+                # print(f"Metadata file created at: {meta_file_path}")
+                # print(f"Metadata file content: {json.dumps(meta_content, indent=2)}")
             except IOError as e:
                 print(f"Error writing to file {meta_file_path}: {e}")
                 return None
@@ -391,7 +391,7 @@ class DaphneContext(object):
             unnamed_params = [data_path_param]
             named_params = []
 
-            print(f"from_numpy(): dtype={mat.dtype}")
+            # print(f"from_numpy(): dtype={mat.dtype}")
 
             print("Creating Matrix object for readMatrix")
             try:
