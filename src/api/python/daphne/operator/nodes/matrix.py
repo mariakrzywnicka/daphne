@@ -102,7 +102,7 @@ class Matrix(OperationNode):
 
     def _is_numpy(self):
         return isinstance(self._np_array, np.ndarray)
-    
+
     def getDType(self, d_type):
         if d_type == np.dtype('float32'):
             return "f32"
@@ -126,7 +126,7 @@ class Matrix(OperationNode):
             return "str"
         else:
             return "object"
-    
+
     def _is_numpy(self) -> bool:
         return self._np_array is not None
     
