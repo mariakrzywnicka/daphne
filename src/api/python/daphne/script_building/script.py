@@ -89,11 +89,11 @@ class DaphneDSLScript:
         self._variable_counter = 0
      
     def execute(self):
-        print("Executing DaphneDSL script")
+        # print("Executing DaphneDSL script")
         temp_out_path = os.path.join(TMP_PATH, "tmpdaphne.daphne")
         with open(temp_out_path, "w") as temp_out_file:
             temp_out_file.writelines(self.daphnedsl_script)
-            print("line: ", self.daphnedsl_script)
+            # print("line: ", self.daphnedsl_script)
 
          # Check if the file exists
         if not os.path.exists(temp_out_path):
@@ -101,7 +101,7 @@ class DaphneDSLScript:
             return
         
         res = DaphneLib.daphne(ctypes.c_char_p(str.encode(PROTOTYPE_PATH)), ctypes.c_char_p(str.encode(temp_out_path)))
-        print(f"Result from DaphneLib.daphne: {res}")
+        # print(f"Result from DaphneLib.daphne: {res}")
         if res != 0:
             # Error message with DSL code line.
             error_message = DaphneLib.getResult().error_message.decode("utf-8")

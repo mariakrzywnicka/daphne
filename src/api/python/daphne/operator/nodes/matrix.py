@@ -97,7 +97,7 @@ class Matrix(OperationNode):
                         },
                         f, indent=2
                     )
-        print(f"Code line: {code_line}")
+        # print(f"Code line: {code_line}")
         return code_line
 
     def _is_numpy(self):

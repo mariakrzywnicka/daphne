@@ -1156,7 +1156,7 @@ antlrcpp::Any DaphneDSLBuiltins::build(mlir::Location loc, const std::string &fu
         mlir::Value rows = args[1];
         mlir::Value cols = args[2];
         mlir::Value valueType = args[3];
-        mlir::Value itemsize = args[4]; // added for testing
+//        mlir::Value itemsize = args[4]; // added for testing
 
         //std::cerr << "Arguments received: " << std::endl;
         //std::cerr << "  Upper: " << upper << std::endl;
@@ -1188,6 +1188,8 @@ antlrcpp::Any DaphneDSLBuiltins::build(mlir::Location loc, const std::string &fu
             vt = builder.getIntegerType(32, false);
         else if (valueTypeCode == (int64_t)ValueTypeCode::UI64)
             vt = builder.getIntegerType(64, false);
+        else if (valueTypeCode == (int64_t)ValueTypeCode::STR)
+            vt = mlir::daphne::StringType::get(builder.getContext());
         else
             throw ErrorHandler::compilerError(loc, "DSLBuiltins", "invalid value type code");
 

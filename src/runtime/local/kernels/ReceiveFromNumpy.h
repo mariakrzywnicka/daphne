@@ -56,7 +56,7 @@ template <typename VT> struct NoOpDeleter {
 
 template <typename VT> struct ReceiveFromNumpy<DenseMatrix<VT>> {
     static void apply(DenseMatrix<VT> *&res, uint64_t address, int64_t rows, int64_t cols, DCTX(ctx)) {
-        std::cerr << "ReceiveFromNumpy: Extracting data from shared memory" << std::endl;
+//        std::cerr << "ReceiveFromNumpy: Extracting data from shared memory" << std::endl;
         res = DataObjectFactory::create<DenseMatrix<VT>>(
             rows, cols, std::shared_ptr<VT[]>((VT *)(address), NoOpDeleter<VT>()));
     }
@@ -71,8 +71,7 @@ struct ReceiveFromNumpy<DenseMatrix<std::string>> {
                     DCTX(ctx)) {
         try {
             // Calculate shared memory address
-            char* shared_mem = reinterpret_cast<char*>(
-                (static_cast<uint64_t>(address));
+            char* shared_mem = reinterpret_cast<char*>(static_cast<uint64_t>(address));
 
             // Create result matrix
             res = DataObjectFactory::create<DenseMatrix<std::string>>(rows, cols, false);

@@ -237,8 +237,8 @@ class DaphneContext(object):
             csv_file_path = file_name + ".csv"
             meta_file_path = csv_file_path + ".meta"
 
-            if shared_memory:
-                shared_memory = False
+            # if shared_memory:
+            #     shared_memory = False
 
             string_data = mat.astype(str).tolist()
 
@@ -292,16 +292,13 @@ class DaphneContext(object):
         :param return_shape: Whether to return the original shape of the input array.
         :return: The data from numpy as a Matrix.
         """
-<<<<<<< HEAD
         print(f"from_numpy2()")
 
-=======
->>>>>>> 1237b6e5 (update)
         if isinstance(mat, (pd.Series, pd.DataFrame)):
             mat = mat.to_numpy()
 
         original_shape = mat.shape
-<<<<<<< HEAD
+
         print(f"Original shape: {original_shape}")
         
         if mat.ndim == 1:
@@ -313,7 +310,6 @@ class DaphneContext(object):
         print(f"Reshaped matrix: {mat.shape}")
 
         print(f"from_numpy(): dtype={mat.dtype}")
-=======
 
         # Ensure the matrix is 2D
         if mat.ndim == 1:
@@ -321,7 +317,6 @@ class DaphneContext(object):
         elif mat.ndim > 2:
             mat = mat.reshape((original_shape[0], -1))
         rows, cols = mat.shape
->>>>>>> 1237b6e5 (update)
 
         # Assign value type code (vtc) based on dtype
         d_type = mat.dtype
@@ -347,7 +342,7 @@ class DaphneContext(object):
             raise ValueError(f"Unsupported numpy dtype: {d_type}")
 
         if shared_memory:
-<<<<<<< HEAD
+
             if mat.dtype.kind in {'O', 'U', 'S'}:
                 print("Data transfer via shared memory for string data.")
                 # Serialize the string data
@@ -368,8 +363,6 @@ class DaphneContext(object):
 
                 # Get the address of the shared memory
                 address = shm.find(serialized_data)
-                upper = (address & 0xFFFFFFFF00000000) >> 32
-                lower = (address & 0xFFFFFFFF)
 
                 # Create metadata
                 meta_content = {
@@ -380,20 +373,18 @@ class DaphneContext(object):
                 }
                 print(f"Metadata: {meta_content}")
 
-                # Store metadata if needed
-                self.store_metadata("string_data", meta_content) # added for testing
+                # # Store metadata if needed
+                # self.store_metadata("string_data", meta_content) # added for testing
 
                 # Create a Matrix object with shared memory metadata
                 vtc = STR # added for testing
-                unnamed_params = [upper, lower, rows, cols, vtc]
+                unnamed_params = [address, rows, cols, vtc]
                 named_params = []
                 res = Matrix(self, 'receiveFromNumpy', unnamed_params, named_params, local_data=mat)
                 print(f"Matrix object created with shared memory metadata")
             else:
                 # Handle numerical data
                 address = mat.ctypes.data_as(np.ctypeslib.ndpointer(dtype=mat.dtype, ndim=1, flags='C_CONTIGUOUS')).value
-                upper = (address & 0xFFFFFFFF00000000) >> 32
-                lower = (address & 0xFFFFFFFF)
 
                 # Change the data type, if int16 or uint16 is handed over.
                 if mat.dtype == np.int16:
@@ -440,22 +431,18 @@ class DaphneContext(object):
                 # Get address of shared memory
                 buf = memoryview(shm)
                 address = ctypes.addressof(ctypes.c_char.from_buffer(buf))
-                upper = (address >> 32) & 0xFFFFFFFF
-                lower = address & 0xFFFFFFFF
 
                 # Create Matrix with handle to keep memory alive
-                res = Matrix(self, 'receiveFromNumpy', [upper, lower, rows, cols, 8])
+                res = Matrix(self, 'receiveFromNumpy', [address, rows, cols, 8])
             else:  # Handle numerical data
                 # Ensure data is C-contiguous
                 mat = np.ascontiguousarray(mat)
 
                 # Get address of the data
                 address = mat.ctypes.data
-                upper = (address >> 32) & 0xFFFFFFFF
-                lower = address & 0xFFFFFFFF
 
                 # Create Matrix
-                res = Matrix(self, 'receiveFromNumpy', [upper, lower, rows, cols, vtc], local_data=mat)
+                res = Matrix(self, 'receiveFromNumpy', [address, rows, cols, vtc], local_data=mat)
         else:
             # Fallback to file-based transfer
             file_name = os.path.join(TMP_PATH, "numpy_data")
